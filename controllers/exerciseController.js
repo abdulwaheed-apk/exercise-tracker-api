@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler')
 const Exercise = require('../models/exerciseModel')
 const User = require('../models/userModel')
 const { validationResult } = require('express-validator')
+const mongoose = require('mongoose')
 
 //**  Controller Functions */
 
@@ -51,14 +52,15 @@ const createExercise = async (req, res) => {
 // }
 const getExercises = async (req, res) => {
   try {
-    const exercises = await Exercise.find()
+    const exercises = await Exercise.find({
+      userId: new mongoose.Types.ObjectId(req.user.id),
+    })
     if (exercises.length === 0) {
-      res.status(404).json({ message: 'Exercises Not Found, Add New.' })
+      return res.status(404).json({ message: 'Exercises Not Found, Add New.' })
     }
     res.status(200).json(exercises)
   } catch (error) {
-    res.status(500)
-    console.log(error.message)
+    res.status(500).json({ message: error.message })
   }
 }
 

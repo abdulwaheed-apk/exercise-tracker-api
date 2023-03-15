@@ -16,7 +16,7 @@ app.use(express.json())
 // Connect Database
 connectDB()
 app.get('/', async (req, res) => {
-  res.send('Hello')
+  res.send('Hello World')
 })
 // app.get('/dashboard', verifyToken, async (req, res) => {
 //   res.send('Hello dashboard')
