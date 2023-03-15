@@ -40,10 +40,8 @@ router.post(
       }
     }),
 
-  body('password', '-m- password is required')
-    .not()
-    .isEmpty()
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm),
+  body('password', '-m- password is required').not().isEmpty(),
+  // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm),
   register
 )
 router.post('/login', login)

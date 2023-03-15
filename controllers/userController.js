@@ -85,7 +85,31 @@ const login = asyncHandler(async (req, res) => {
 //@method PUT
 //@access Private
 const profileUpdate = asyncHandler(async (req, res) => {
-  res.send('profile Update')
+  // const user = await User.findById(req.user.id)
+  // const { password, newPassword, username, email, name } = req.body
+  // if (!name || !email || !username || !password || !newPassword) {
+  //   res
+  //     .status(400)
+  //     .json({ message: 'Kindly Add user details to update user data' })
+  // }
+
+  // const isMatch = await bcrypt.compare(password, user.password)
+
+  // if (!isMatch) {
+  //   return res.status(400).json({ message: 'Old Password is Incorrect' })
+  // } else {
+  //   const newHashedPass = await bcrypt.hash(newPassword, 10)
+  //   const updatedUser = await User.findByIdAndUpdate(req.user.id, {
+  //     name,
+  //     email,
+  //     password: newHashedPass,
+  //     username,
+  //   })
+  //   console.log('userOld ', user)
+  //   console.log('updatedUser ', updatedUser)
+  //   res.status(200).json(updatedUser)
+  // }
+  res.json({ message: 'Update user' })
 })
 
 // Token Generate Function

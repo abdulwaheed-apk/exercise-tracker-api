@@ -4,7 +4,7 @@ const verifyToken = async (req, res, next) => {
   try {
     let token = req.header('Authorization')
     if (!token) {
-      return res.status(401).send("You are Not allowed, don't have token")
+      return res.status(401).send('Unauthorized, you are not allowed.')
     }
     if (token.startsWith('Bearer')) {
       token = token.slice(7, token.length).trimLeft()
