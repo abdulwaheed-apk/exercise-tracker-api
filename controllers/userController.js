@@ -53,8 +53,7 @@ const register = asyncHandler(async (req, res) => {
       token: await generateToken(id),
     })
   } else {
-    res.status(400)
-    throw new Error('Invalid user Data')
+    res.status(400).json({ message: 'Invalid user Data' })
   }
 })
 //@route /api/users/login
@@ -77,8 +76,7 @@ const login = asyncHandler(async (req, res) => {
       .status(200)
       .json({ name, username, message: 'you are authentic user', token })
   } else {
-    res.status(400)
-    throw new Error('Invalid Credentials')
+    res.status(400).json({ message: 'Invalid Credentials' })
   }
 })
 //@route /api/users/profileUpdate
