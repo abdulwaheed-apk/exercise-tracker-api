@@ -20,42 +20,46 @@ const getUsers = asyncHandler(async (req, res) => {
 //@route /api/users/register
 //@method POST To create user
 //@access public
-const register = asyncHandler(async (req, res) => {
+const register = async (req, res) => {
   const { name, email, username, password } = req.body
   // if express validator has not verified throw errors and not process further
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() })
   }
-  // Find if user already exist
-  const userExist = await User.findOne({ email })
-  if (userExist) {
-    res.status(400)
-    throw new Error(' -- User with similar email already exist')
-  }
-  // Hash password
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
-  // create user
-  const user = await User.create({
-    name,
-    username,
-    email,
-    password: hashedPassword,
-  })
-  if (user) {
-    const id = user._id
-    const { name, username } = user
-    res.status(201).json({
-      // user,
+  try {
+    // Find if user already exist
+    const userExist = await User.findOne({ email })
+    if (userExist) {
+      res.status(400)
+      throw new Error(' -- User with similar email already exist')
+    }
+    // Hash password
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    // create user
+    const user = await User.create({
       name,
       username,
-      token: await generateToken(id),
+      email,
+      password: hashedPassword,
     })
-  } else {
-    res.status(400).json({ message: 'Invalid user Data' })
+    if (user) {
+      const id = user._id
+      const { name, username } = user
+      res.status(201).json({
+        // user,
+        name,
+        username,
+        token: await generateToken(id),
+      })
+    } else {
+      res.status(400).json({ message: 'Invalid user Data' })
+    }
+  } catch (error) {
+    res.status(500).json({ message: `Server Error ${error.message}` })
   }
-})
+}
 //@route /api/users/login
 //@method POST
 //@access public
@@ -93,36 +97,36 @@ const login = async (req, res) => {
 //@route /api/users/profileUpdate
 //@method PUT
 //@access Private
-const profileUpdate = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id)
-  const { password, newPassword, username, email, name } = req.body
-  if (!name || !email || !username || !password || !newPassword) {
-    res
-      .status(400)
-      .json({ message: 'Kindly Add user details to update user data' })
-  }
+const profileUpdate = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    const { password, newPassword, username, email, name } = req.body
+    if (!name || !email || !username || !password || !newPassword) {
+      res
+        .status(400)
+        .json({ message: 'Kindly Add user details to update user data' })
+    }
 
-  const isMatch = await bcrypt.compare(password, user.password)
-  console.log('isMatch', isMatch)
-  if (!isMatch) {
-    return res.status(400).json({ message: 'Old Password is Incorrect' })
-  } else {
-    const newHashedPass = await bcrypt.hash(newPassword, 10)
-    const updatedUser = await User.updateOne(
-      { _id: req.user.id },
-      {
-        name,
-        email,
-        password: newHashedPass,
-        username,
-      }
-    )
-    console.log('userOld ', user)
-    console.log('updatedUser ', updatedUser)
-    res.status(200).json(updatedUser)
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Old Password is Incorrect' })
+    } else {
+      const newHashedPass = await bcrypt.hash(newPassword, 10)
+      const updatedUser = await User.updateOne(
+        { _id: req.user.id },
+        {
+          name,
+          email,
+          password: newHashedPass,
+          username,
+        }
+      )
+      res.status(200).json(updatedUser)
+    }
+  } catch (error) {
+    res.status(500).json({ message: `Server Error ${error.message}` })
   }
-  // res.json({ message: 'Update user' })
-})
+}
 
 // Token Generate Function
 const generateToken = async (id) => {
