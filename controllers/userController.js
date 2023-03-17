@@ -59,26 +59,37 @@ const register = asyncHandler(async (req, res) => {
 //@route /api/users/login
 //@method POST
 //@access public
-const login = asyncHandler(async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body
-  const user = await User.findOne({ email })
-  if (!user) {
-    res.status(404)
-    throw new Error('User Not found')
+  // if express validator has not verified throw errors and not process further
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() })
   }
-  const isMatch = await bcrypt.compare(password, user.password)
-  if (isMatch) {
-    const token = await generateToken(user._id)
-    // res.cookie(token)
-    const { name, username } = user
-    // console.log(name, username)
-    res
-      .status(200)
-      .json({ name, username, message: 'you are authentic user', token })
-  } else {
-    res.status(400).json({ message: 'Invalid Credentials' })
+  try {
+    if (email === '' || password === '') {
+      return res.status(400).json({ message: 'Kindly enter Login Credentials' })
+    }
+    const user = await User.findOne({ email })
+    if (!user) {
+      return res.status(404).send({ message: 'User with this email not found' })
+    }
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (isMatch) {
+      const token = await generateToken(user._id)
+      // res.cookie(token)
+      const { name, username } = user
+      // console.log(name, username)
+      res
+        .status(200)
+        .json({ name, username, message: 'you are authentic user', token })
+    } else {
+      res.status(400).json({ message: 'Invalid Password' })
+    }
+  } catch (error) {
+    res.status(500).json({ message: `Server Error ${error.message}` })
   }
-})
+}
 //@route /api/users/profileUpdate
 //@method PUT
 //@access Private

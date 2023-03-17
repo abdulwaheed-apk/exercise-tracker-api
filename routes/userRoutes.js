@@ -44,7 +44,12 @@ router.post(
   // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm),
   register
 )
-router.post('/login', login)
+router.post(
+  '/login',
+  body('email', '-m- email is required').not().isEmpty(),
+  body('password', '-m- password is required').not().isEmpty(),
+  login
+)
 router.put('/profileUpdate', verifyToken, profileUpdate)
 
 module.exports = router
