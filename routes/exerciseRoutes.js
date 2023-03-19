@@ -12,8 +12,15 @@ const verifyToken = require('../middlewares/auth')
 router.post(
   '/',
   verifyToken,
-  body('exerciseName', '-m- Exercise Name is required').not().isEmpty().trim(),
-  body('details', '-m- Exercise details is required').trim().escape(),
+  body('exerciseName', `Exercise Name is required \n`).not().isEmpty().trim(),
+  body('exerciseType', `Exercise Type is required \n`).not().isEmpty().trim(),
+  body('duration', `Exercise Duration is required \n`).not().isEmpty().trim(),
+  body('date', `Exercise Date is required \n`).not().isEmpty().trim(),
+  body('details', `Exercise details is required \n`)
+    .not()
+    .isEmpty()
+    .trim()
+    .escape(),
   createExercise
 )
 router.get('/', verifyToken, getExercises)

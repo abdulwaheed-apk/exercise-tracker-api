@@ -98,16 +98,16 @@ const login = async (req, res) => {
 //@method PUT
 //@access Private
 const profileUpdate = async (req, res) => {
+  const user = await User.findById(req.user.id)
   try {
-    const user = await User.findById(req.user.id)
     const { password, newPassword, username, email, name } = req.body
     if (!name || !email || !username || !password || !newPassword) {
-      res
+      return res
         .status(400)
         .json({ message: 'Kindly Add user details to update user data' })
     }
 
-    const isMatch = await bcrypt.compare(password, user.password)
+    const isMatch = await bcrypt.compare(newPassword, user.password)
     if (!isMatch) {
       return res.status(400).json({ message: 'Old Password is Incorrect' })
     } else {
@@ -121,6 +121,7 @@ const profileUpdate = async (req, res) => {
           username,
         }
       )
+      // console.log('check me if updated', updatedUser)
       res.status(200).json(updatedUser)
     }
   } catch (error) {

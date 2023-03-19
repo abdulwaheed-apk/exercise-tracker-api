@@ -14,37 +14,37 @@ const verifyToken = require('../middlewares/auth')
 router.get('/', verifyToken, getUsers)
 router.post(
   '/register',
-  body('name', 'Name=> name is required').not().isEmpty().trim(),
-  body('username', 'Username=>  username is required and must be unique')
+  body('name', `Name is required \n `).not().isEmpty().trim(),
+  body('username', `Username is required and must be unique \n `)
     .not()
     .isEmpty()
     .trim()
     .custom(async (value) => {
       const user = await User.findOne({ username: value })
       if (user) {
-        return Promise.reject('Username=> username is not available')
+        return Promise.reject(`Username is not available \n `)
       }
     }),
 
-  body('email', ' Email => email is required, and must be unique.  ')
+  body('email', `Email is required, and must be unique. \n `)
     .isEmail()
     .normalizeEmail()
     .trim()
     .custom(async (value) => {
       const user = await User.findOne({ email: value })
       if (user) {
-        return Promise.reject('Email Already in use Must be unique')
+        return Promise.reject(`Email Already in use Must be unique \n `)
       }
     }),
 
-  body('password', 'Password => password is required').not().isEmpty(),
+  body('password', `Password is required \n `).not().isEmpty(),
   // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm),
   register
 )
 router.post(
   '/login',
-  body('email', " 'Email => ' email is required").not().isEmpty(),
-  body('password', 'Password => password is required').not().isEmpty(),
+  body('email', `Email is required \n `).not().isEmpty(),
+  body('password', `Password is required \n `).not().isEmpty(),
   login
 )
 router.put('/profileUpdate', verifyToken, profileUpdate)
