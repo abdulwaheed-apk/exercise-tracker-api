@@ -6,6 +6,7 @@ const {
   register,
   login,
   profileUpdate,
+  deleteUser,
 } = require('../controllers/userController')
 const User = require('../models/userModel')
 const verifyToken = require('../middlewares/auth')
@@ -48,5 +49,6 @@ router.post(
   login
 )
 router.put('/profileUpdate', verifyToken, profileUpdate)
+router.delete('/deleteUser', verifyToken, deleteUser)
 
 module.exports = router

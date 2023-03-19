@@ -39,16 +39,6 @@ const createExercise = async (req, res) => {
 //@desc Get all exercises
 //@access Private
 
-// const getExercises = async (req, res) => {
-//   try {
-//     const exercises = await Exercise.find()
-//     if (exercises.length === 0) {
-//       res.status(404).json({ message: 'Exercises Not Found, Add New.' })
-//     }
-//     res.status(200).json({ exercises })
-//   } catch (error) {
-//     res.status(500).json({ message: error.message })
-//   }
 // }
 const getExercises = async (req, res) => {
   try {

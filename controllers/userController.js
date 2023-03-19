@@ -128,9 +128,23 @@ const profileUpdate = async (req, res) => {
     res.status(500).json({ message: `Server Error ${error.message}` })
   }
 }
-
+//@route /api/users/deleteUser
+//@method DELETE
+//@access Private
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    const deletedUser = await User.findByIdAndDelete(req.user.id)
+    res.status(200).json({ message: 'Your Account Deleted Successfully' })
+  } catch (error) {
+    res.status(500).json({ message: `Server Error ${error.message}` })
+  }
+}
 // Token Generate Function
 const generateToken = async (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' })
 }
-module.exports = { getUsers, register, login, profileUpdate }
+module.exports = { getUsers, register, login, profileUpdate, deleteUser }
